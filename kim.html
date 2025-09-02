@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바이오파운드리 표준화: 상호 운용 가능한 합성생물학 연구를 위한 제언</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #14b8a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <nav style="background-color: #f3f4f6; padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb;">
+        <strong>페이지 이동:</strong>
+        <a href="index.html" style="margin: 0 1rem; color: #3b82f6; text-decoration: none;">상세 워크플로우</a>
+        <a href="kim.html" style="margin: 0 1rem; color: #3b82f6; text-decoration: none;">논문 핵심 요약</a>
+        <a href="roadmap.html" style="margin: 0 1rem; color: #3b82f6; text-decoration: none;">K-바이오파운드리 비전</a>
+    </nav>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i data-lucide="dna" class="text-blue-500"></i>
+                <h1 class="text-xl font-bold text-gray-800">Biofoundry Standardization</h1>
+            </div>
+            <a href="https://doi.org/10.1038/s41467-025-61263-6" target="_blank" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition">
+                논문 원문 보기 &rarr;
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+                미래의 합성생물학을 위한 청사진:
+                <span class="gradient-text">바이오파운드리 표준화</span>
+            </h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                합성생물학 연구의 확장성과 효율성을 극대화하기 위해, 본 연구는 바이오파운드리 활동을 4개의 논리적 계층으로 구성하는 '추상화 계층' 프레임워크를 제안합니다. 이는 전 세계 연구 협력을 위한 초석입니다.
+            </p>
+        </section>
+
+        <!-- Problem Section -->
+        <section class="mb-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold">표준화의 부재가 가져오는 도전 과제들</h3>
+                <p class="text-md text-gray-500 mt-2">서로 다른 언어와 프로세스는 혁신의 발목을 잡습니다.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card p-6">
+                    <div class="flex items-center justify-center bg-red-100 rounded-full w-12 h-12 mb-4">
+                        <i data-lucide="shuffle" class="text-red-500"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2">프로세스의 비호환성</h4>
+                    <p class="text-gray-600">수동 실험에 최적화된 프로토콜을 자동화 장비에 적용할 때 발생하는 예측 불가능한 결과와 재현성 문제를 해결해야 합니다.</p>
+                </div>
+                <div class="card p-6">
+                    <div class="flex items-center justify-center bg-yellow-100 rounded-full w-12 h-12 mb-4">
+                        <i data-lucide="message-square-diff" class="text-yellow-500"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2">용어의 불일치</h4>
+                    <p class="text-gray-600">'프로토콜', '워크플로우' 등 혼용되는 용어들은 연구자 간의 명확한 소통과 데이터 공유를 어렵게 만듭니다.</p>
+                </div>
+                <div class="card p-6">
+                    <div class="flex items-center justify-center bg-indigo-100 rounded-full w-12 h-12 mb-4">
+                        <i data-lucide="globe-lock" class="text-indigo-500"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2">협업의 한계</h4>
+                    <p class="text-gray-600">표준화된 프레임워크 없이는 여러 바이오파운드리가 경험과 자원을 효과적으로 공유하고 협력하기 어렵습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution: 4-Level Abstraction Hierarchy -->
+        <section class="mb-20 bg-white p-8 rounded-xl shadow-lg">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold">해결책: 4단계 추상화 계층</h3>
+                <p class="text-md text-gray-500 mt-2">복잡한 바이오파운드리 운영을 명확하고 관리 가능한 4개의 레벨로 정의합니다.</p>
+            </div>
+            
+            <div class="relative max-w-4xl mx-auto">
+                <!-- Visual representation of the hierarchy -->
+                <div class="absolute left-1/2 -translate-x-1/2 w-0.5 bg-blue-200 h-full top-0"></div>
+                
+                <div class="space-y-16">
+                    <!-- Level 0: Project -->
+                    <div class="relative flex items-center">
+                        <div class="hidden md:flex w-1/2 justify-end pr-8">
+                            <img src="https://placehold.co/300x200/e0f2fe/0ea5e9?text=Project+Goal" alt="프로젝트 목표" class="rounded-lg shadow-md">
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 bg-blue-500 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl ring-8 ring-white">0</div>
+                        <div class="w-full md:w-1/2 md:pl-8">
+                            <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                                <h4 class="text-2xl font-bold text-blue-800">Level 0: 프로젝트 (Project)</h4>
+                                <p class="mt-2 text-gray-700">가장 상위 계층으로, 연구의 최종 목표를 정의합니다. (예: "신규 항생물질 개발")</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Level 1: Service/Capability -->
+                    <div class="relative flex items-center flex-row-reverse">
+                         <div class="hidden md:flex w-1/2 justify-start pl-8">
+                            <img src="https://placehold.co/300x200/ecfdf5/10b981?text=Service" alt="서비스 및 역량" class="rounded-lg shadow-md">
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 bg-teal-500 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl ring-8 ring-white">1</div>
+                        <div class="w-full md:w-1/2 md:pr-8">
+                             <div class="bg-teal-50 p-6 rounded-lg border border-teal-200 text-right md:text-left">
+                                <h4 class="text-2xl font-bold text-teal-800">Level 1: 서비스/역량 (Service/Capability)</h4>
+                                <p class="mt-2 text-gray-700">프로젝트 목표 달성을 위해 바이오파운드리가 제공하는 기능 단위입니다. (예: "단백질 엔지니어링", "DNA 서열 분석")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Level 2: Workflow -->
+                    <div class="relative flex items-center">
+                        <div class="hidden md:flex w-1/2 justify-end pr-8">
+                            <img src="https://placehold.co/300x200/fefce8/eab308?text=DBTL+Cycle" alt="워크플로우" class="rounded-lg shadow-md">
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 bg-yellow-500 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl ring-8 ring-white">2</div>
+                        <div class="w-full md:w-1/2 md:pl-8">
+                            <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+                                <h4 class="text-2xl font-bold text-yellow-800">Level 2: 워크플로우 (Workflow)</h4>
+                                <p class="mt-2 text-gray-700">서비스를 수행하기 위한 DBTL (설계-구축-시험-학습) 기반의 모듈화된 작업 순서입니다. (예: "DNA 올리고머 조립 워크플로우")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Level 3: Unit Operation -->
+                    <div class="relative flex items-center flex-row-reverse">
+                        <div class="hidden md:flex w-1/2 justify-start pl-8">
+                            <img src="https://placehold.co/300x200/f3e8ff/9333ea?text=Unit+Operation" alt="단위 작업" class="rounded-lg shadow-md">
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 bg-purple-500 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl ring-8 ring-white">3</div>
+                        <div class="w-full md:w-1/2 md:pr-8">
+                             <div class="bg-purple-50 p-6 rounded-lg border border-purple-200 text-right md:text-left">
+                                <h4 class="text-2xl font-bold text-purple-800">Level 3: 단위 작업 (Unit Operation)</h4>
+                                <p class="mt-2 text-gray-700">워크플로우를 구성하는 가장 작은 단위의 실행 가능한 작업입니다. (예: "액체 이송", "PCR 수행")</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits and Future Section -->
+        <section class="mb-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold">기대 효과와 미래 방향</h3>
+                 <p class="text-md text-gray-500 mt-2">표준화는 합성생물학의 새로운 시대를 엽니다.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
+                    <i data-lucide="blocks" class="text-blue-500 w-8 h-8 mb-3"></i>
+                    <h4 class="text-lg font-semibold mb-1">모듈성 및 유연성</h4>
+                    <p class="text-sm text-gray-600">워크플로우와 단위 작업을 레고 블록처럼 재조합하여 다양한 실험을 빠르고 유연하게 설계할 수 있습니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-teal-500">
+                    <i data-lucide="repeat" class="text-teal-500 w-8 h-8 mb-3"></i>
+                    <h4 class="text-lg font-semibold mb-1">재현성 및 신뢰도</h4>
+                    <p class="text-sm text-gray-600">명확하게 정의된 프로토콜은 실험 결과의 재현성을 높여 연구의 신뢰도를 향상시킵니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500">
+                     <i data-lucide="cpu" class="text-yellow-500 w-8 h-8 mb-3"></i>
+                    <h4 class="text-lg font-semibold mb-1">AI와 데이터 통합</h4>
+                    <p class="text-sm text-gray-600">표준화된 데이터는 AI 모델 학습에 필수적이며, 이를 통해 실험 설계와 결과 분석을 자동화하고 가속화합니다.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-purple-500">
+                     <i data-lucide="network" class="text-purple-500 w-8 h-8 mb-3"></i>
+                    <h4 class="text-lg font-semibold mb-1">글로벌 협력 네트워크</h4>
+                    <p class="text-sm text-gray-600">공통의 언어를 바탕으로 전 세계 바이오파운드리가 협력하는 분산형 네트워크 구축의 기반을 마련합니다.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p class="font-semibold text-lg">더 알아보기</p>
+            <p class="text-gray-400 mt-2 max-w-2xl mx-auto">
+                이 페이지는 Nature Communications에 게재된 "Abstraction hierarchy to define biofoundry workflows and operations for interoperable synthetic biology research and applications" 논문을 기반으로 제작되었습니다.
+            </p>
+            <a href="https://doi.org/10.1038/s41467-025-61263-6" target="_blank" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">
+                논문 원문 읽기
+            </a>
+            <div class="mt-6 text-xs text-gray-500">
+                &copy; 2025 Biofoundry Standardization Initiative. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국 국가 바이오파운드리 구축 워크플로우</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is designed as a single-page exploratory dashboard. It begins with a high-impact hero section showcasing the key projected outcomes (cost, time, success rate) to immediately grab user attention. The core of the app is an interactive DBTL (Design-Build-Test-Learn) cycle diagram. This structure was chosen because the DBTL cycle is the central process of a biofoundry. Allowing users to click on each stage to reveal details provides a more engaging and non-linear learning experience than a simple top-to-bottom text document. This is followed by a data visualization section with a bar chart to quantify the impact, and a clear roadmap. This flow guides the user from the "why" (big impact numbers) to the "how" (interactive process) and finally the "what's next" (roadmap), creating a comprehensive and logical narrative for understanding the project. -->
+    <!-- Visualization & Content Choices: 
+        1.  Report Info: R&D Time (10y -> 2y), Cost (300B -> 30B KRW), Success Rate (10% -> 90%). 
+            - Goal: Inform & Impress.
+            - Viz/Method: Large animated number counters with percentage symbols.
+            - Interaction: Numbers count up when scrolled into view.
+            - Justification: Dynamically shows the magnitude of improvement, creating a strong first impression. Suffix is added via JS to keep data-target as a number. Method: JavaScript IntersectionObserver.
+        2.  Report Info: The DBTL (Design, Build, Test, Learn) workflow.
+            - Goal: Organize & Explain.
+            - Viz/Method: A clickable circular flow diagram made with styled HTML divs and Tailwind CSS.
+            - Interaction: Clicking a stage reveals its detailed description in an adjacent panel.
+            - Justification: Visually represents the cyclical nature of the process, which is more intuitive than a linear list. Encourages user exploration. Method: HTML/CSS/JS.
+        3.  Report Info: Comparison of R&D metrics before and after biofoundry implementation.
+            - Goal: Compare.
+            - Viz/Method: Three separate Bar Charts for each metric.
+            - Interaction: Hover tooltips show precise values.
+            - Justification: A single chart with different units (time, money, percentage) is confusing. Separating them into three distinct charts makes the comparison for each metric clear, accurate, and easy to understand. Library: Chart.js (Canvas).
+        4.  Report Info: Overall establishment plan.
+            - Goal: Inform.
+            - Viz/Method: A simple, clean timeline diagram.
+            - Interaction: Subtle hover effects.
+            - Justification: A timeline is a universally understood format for presenting project phases chronologically. Method: HTML/CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .metric-card h3 {
+            transition: color 0.3s ease;
+        }
+        .metric-card:hover h3 {
+            color: #2563eb;
+        }
+        .metric-card .counter {
+            transition: transform 0.3s ease;
+        }
+        .metric-card:hover .counter {
+            transform: scale(1.05);
+        }
+        .dbtl-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .dbtl-item.active {
+            background-color: #2563eb !important;
+            color: white !important;
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .dbtl-item.active .dbtl-icon {
+            filter: brightness(0) invert(1);
+        }
+        .dbtl-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .dbtl-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 4px solid #2563eb;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav style="background-color: #f3f4f6; padding: 1rem; text-align: center; border-bottom: 1px solid #e5e7eb;">
+        <strong>페이지 이동:</strong>
+        <a href="index.html" style="margin: 0 1rem; color: #3b82f6; text-decoration: none;">상세 워크플로우</a>
+        <a href="kim.html" style="margin: 0 1rem; color: #3b82f6; text-decoration: none;">논문 핵심 요약</a>
+        <a href="roadmap.html" style="margin: 0 1rem; color: #3b82f6; text-decoration: none;">K-바이오파운드리 비전</a>
+    </nav>
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-600">K-Biofoundry</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#vision" class="text-slate-600 hover:text-blue-600 transition">비전 및 목표</a>
+                <a href="#workflow" class="text-slate-600 hover:text-blue-600 transition">핵심 워크플로우</a>
+                <a href="#impact" class="text-slate-600 hover:text-blue-600 transition">기대효과</a>
+                <a href="#roadmap" class="text-slate-600 hover:text-blue-600 transition">구축 로드맵</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section id="vision" class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">국가 바이오파운드리, 바이오 R&D의 미래를 열다</h2>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">
+                자동화된 로봇과 인공지능을 결합하여 바이오 연구개발의 속도, 비용, 성공률을 획기적으로 개선하고, 대한민국 바이오 산업의 글로벌 경쟁력을 강화합니다.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="metric-card bg-white p-8 rounded-xl shadow-lg border border-slate-200/80">
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">개발 기간 단축</h3>
+                    <!-- MODIFIED: data-suffix added -->
+                    <p class="text-4xl font-bold text-blue-600 counter" data-target="80" data-suffix="%">0%</p>
+                    <p class="text-slate-500">10년 → 2년 (80%↓)</p>
+                </div>
+                <div class="metric-card bg-white p-8 rounded-xl shadow-lg border border-slate-200/80">
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">개발 비용 절감</h3>
+                     <!-- MODIFIED: data-suffix added -->
+                    <p class="text-4xl font-bold text-blue-600 counter" data-target="90" data-suffix="%">0%</p>
+                    <p class="text-slate-500">3천억 → 3백억 (90%↓)</p>
+                </div>
+                <div class="metric-card bg-white p-8 rounded-xl shadow-lg border border-slate-200/80">
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">성공률 증대</h3>
+                     <!-- MODIFIED: data-suffix added -->
+                    <p class="text-4xl font-bold text-blue-600 counter" data-target="900" data-suffix="%">0%</p>
+                    <p class="text-slate-500">10% → 90% (900%↑)</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="workflow" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">핵심 워크플로우: DBTL 사이클</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                    바이오파운드리의 핵심은 '설계-구축-시험-학습'으로 이어지는 DBTL(Design-Build-Test-Learn) 사이클의 고속 자동화입니다. 각 단계를 클릭하여 자세한 정보를 확인해보세요.
+                </p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+                <div id="dbtl-cycle" class="w-full lg:w-2/5 grid grid-cols-2 gap-4">
+                    <div id="design" class="dbtl-item bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center aspect-square active">
+                        <span class="text-4xl mb-2 dbtl-icon">🧬</span>
+                        <h3 class="text-xl font-bold text-center">Design (설계)</h3>
+                    </div>
+                    <div id="build" class="dbtl-item bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center aspect-square">
+                        <span class="text-4xl mb-2 dbtl-icon">🛠️</span>
+                        <h3 class="text-xl font-bold text-center">Build (구축)</h3>
+                    </div>
+                    <div id="learn" class="dbtl-item bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center aspect-square">
+                       <span class="text-4xl mb-2 dbtl-icon">📈</span>
+                        <h3 class="text-xl font-bold text-center">Learn (학습)</h3>
+                    </div>
+                    <div id="test" class="dbtl-item bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center aspect-square">
+                        <span class="text-4xl mb-2 dbtl-icon">🔬</span>
+                        <h3 class="text-xl font-bold text-center">Test (시험)</h3>
+                    </div>
+                </div>
+
+                <div id="dbtl-content-area" class="w-full lg:w-3/5 bg-white p-8 rounded-xl shadow-lg border border-slate-200/80 min-h-[350px]">
+                    <div id="design-content" class="dbtl-content active">
+                        <h3 class="text-2xl font-bold text-blue-600 mb-4">Design (설계)</h3>
+                        <p class="text-slate-600 mb-4">
+                            컴퓨터와 인공지능을 활용하여 목표 기능에 맞는 유전자 및 대사회로를 설계합니다. 기존의 생물학적 데이터를 분석하고 시뮬레이션을 통해 최적의 유전자 조합을 예측합니다.
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li><strong>핵심 기술:</strong> 합성생물학 설계 자동화(CAD), AI 기반 설계, 유전자 데이터베이스</li>
+                            <li><strong>주요 활동:</strong> DNA 서열 설계, 단백질 구조 예측, 대사 경로 최적화</li>
+                            <li><strong>산출물:</strong> 디지털 유전자 서열, 실험 계획서</li>
+                        </ul>
+                    </div>
+                    <div id="build-content" class="dbtl-content">
+                        <h3 class="text-2xl font-bold text-blue-600 mb-4">Build (구축)</h3>
+                        <p class="text-slate-600 mb-4">
+                            설계된 유전자 서열을 바탕으로 실제 DNA를 합성하고, 이를 세포에 삽입하여 맞춤형 미생물을 제작합니다. 로봇 자동화 시스템이 이 과정을 정밀하고 신속하게 수행합니다.
+                        </p>
+                         <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li><strong>핵심 기술:</strong> DNA 합성/조립 자동화, 유전자 편집(CRISPR), 로보틱스</li>
+                            <li><strong>주요 활동:</strong> 유전자 클로닝, 형질전환, 세포 배양</li>
+                            <li><strong>산출물:</strong> 설계된 유전자가 삽입된 재조합 미생물</li>
+                        </ul>
+                    </div>
+                    <div id="test-content" class="dbtl-content">
+                        <h3 class="text-2xl font-bold text-blue-600 mb-4">Test (시험)</h3>
+                        <p class="text-slate-600 mb-4">
+                            제작된 미생물이 원하는 기능을 제대로 수행하는지 대규모로 분석하고 평가합니다. 고속 스크리닝 장비를 통해 수많은 세포 샘플의 특성을 동시에 측정합니다.
+                        </p>
+                         <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li><strong>핵심 기술:</strong> 고속 표현형 분석, 대사체/단백질체 분석, 바이오센서</li>
+                            <li><strong>주요 활동:</strong> 목표 물질 생산량 측정, 세포 성장 속도 분석, 스트레스 반응 평가</li>
+                            <li><strong>산출물:</strong> 세포 기능 및 생산성에 대한 정량적 데이터</li>
+                        </ul>
+                    </div>
+                    <div id="learn-content" class="dbtl-content">
+                        <h3 class="text-2xl font-bold text-blue-600 mb-4">Learn (학습)</h3>
+                        <p class="text-slate-600 mb-4">
+                            시험 단계에서 얻은 방대한 데이터를 인공지능과 머신러닝으로 분석하여, 설계와 실제 기능 간의 관계를 학습합니다. 이 결과를 바탕으로 다음 사이클에서 더 나은 설계를 제안합니다.
+                        </p>
+                         <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li><strong>핵심 기술:</strong> 머신러닝, 통계적 데이터 분석, 생물정보학</li>
+                            <li><strong>주요 활동:</strong> 데이터-모델 비교, 실패 원인 분석, 차세대 설계 전략 수립</li>
+                            <li><strong>산출물:</strong> 개선된 설계안, 생물학적 시스템에 대한 새로운 지식</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">기대효과: R&D 패러다임의 전환</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                    바이오파운드리는 기존의 노동집약적이고 경험에 의존하던 바이오 연구를 데이터 기반의 예측 가능하고 효율적인 공학적 프로세스로 혁신합니다.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200/80">
+                    <div class="chart-container relative w-full h-80 max-w-sm mx-auto">
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200/80">
+                    <div class="chart-container relative w-full h-80 max-w-sm mx-auto">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200/80">
+                    <div class="chart-container relative w-full h-80 max-w-sm mx-auto">
+                        <canvas id="successChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">국가 바이오파운드리 구축 로드맵</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                   체계적인 단계별 구축 계획을 통해 대한민국 바이오 산업의 핵심 인프라를 마련합니다.
+                </p>
+            </div>
+            <div class="relative max-w-2xl mx-auto pl-8">
+                <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-200"></div>
+                <div class="timeline-item relative pl-8 pb-12">
+                    <h4 class="text-xl font-bold text-blue-600 mb-1">1단계: 기반 구축 (1~3년차)</h4>
+                    <p class="text-slate-600">핵심 장비 및 자동화 로봇 도입. 표준 운영 프로토콜(SOP) 개발 및 DBTL 사이클 초기 버전 구축. 데이터 관리 시스템 설계.</p>
+                </div>
+                <div class="timeline-item relative pl-8 pb-12">
+                    <h4 class="text-xl font-bold text-blue-600 mb-1">2단계: 플랫폼 고도화 (4~6년차)</h4>
+                    <p class="text-slate-600">AI/머신러닝 학습 모델 통합. DBTL 사이클 완전 자동화 및 고속화. 산학연 연계 테스트베드 서비스 개시.</p>
+                </div>
+                <div class="timeline-item relative pl-8 pb-12">
+                    <h4 class="text-xl font-bold text-blue-600 mb-1">3단계: 생태계 확장 (7~10년차)</h4>
+                    <p class="text-slate-600">클라우드 기반 원격 연구 지원 시스템 구축. 국가 바이오 데이터 허브 연동. 바이오파운드리 전문 인력 양성 및 기술 확산.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-20">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 K-Biofoundry Initiative. All rights reserved.</p>
+            <p class="text-slate-400 text-sm mt-2">본 페이지는 정보 제공을 위해 제작되었으며, 실제 계획과 다를 수 있습니다.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                // MODIFIED: Animated Counters to handle suffix
+                const counters = document.querySelectorAll('.counter');
+                if (window.IntersectionObserver) {
+                    const observer = new IntersectionObserver(entries => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const counter = entry.target;
+                                const target = +counter.dataset.target;
+                                const suffix = counter.dataset.suffix || '';
+                                const speed = 200; 
+                                counter.innerText = '0' + suffix;
+
+                                const updateCount = () => {
+                                    const countText = counter.innerText.replace(suffix, '');
+                                    const count = +countText;
+                                    const inc = Math.ceil(target / speed);
+                                    if (count < target) {
+                                        counter.innerText = Math.min(count + inc, target) + suffix;
+                                        setTimeout(updateCount, 15);
+                                    } else {
+                                        counter.innerText = target + suffix;
+                                    }
+                                };
+                                updateCount();
+                                observer.unobserve(counter);
+                            }
+                        });
+                    }, { threshold: 0.5 });
+                    counters.forEach(counter => observer.observe(counter));
+                } else {
+                     counters.forEach(counter => {
+                         const target = counter.dataset.target;
+                         const suffix = counter.dataset.suffix || '';
+                         counter.innerText = target + suffix;
+                     });
+                }
+
+                // DBTL Cycle Interaction
+                const dbtlCycle = document.getElementById('dbtl-cycle');
+                if (dbtlCycle) {
+                    const dbtlItems = dbtlCycle.querySelectorAll('.dbtl-item');
+                    const dbtlContents = document.querySelectorAll('.dbtl-content');
+                    dbtlCycle.addEventListener('click', (e) => {
+                        const targetItem = e.target.closest('.dbtl-item');
+                        if (!targetItem) return;
+
+                        const targetId = targetItem.id;
+                        dbtlItems.forEach(item => item.classList.remove('active'));
+                        targetItem.classList.add('active');
+
+                        dbtlContents.forEach(content => {
+                            content.classList.toggle('active', content.id === `${targetId}-content`);
+                        });
+                    });
+                }
+                
+                // Impact Charts
+                const createBarChart = (canvasId, title, dataLabels, beforeData, afterData, unit) => {
+                    const canvas = document.getElementById(canvasId);
+                    if (!canvas) return;
+                    const ctx = canvas.getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: dataLabels,
+                            datasets: [
+                                {
+                                    label: '기존 방식',
+                                    data: beforeData,
+                                    backgroundColor: 'rgba(100, 116, 139, 0.7)',
+                                    borderColor: 'rgba(100, 116, 139, 1)',
+                                    borderWidth: 1,
+                                    barPercentage: 0.6,
+                                    categoryPercentage: 0.7
+                                },
+                                {
+                                    label: '바이오파운드리',
+                                    data: afterData,
+                                    backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                                    borderColor: 'rgba(37, 99, 235, 1)',
+                                    borderWidth: 1,
+                                    barPercentage: 0.6,
+                                    categoryPercentage: 0.7
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + ` ${unit}`;
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { boxWidth: 12 }
+                                },
+                                title: {
+                                    display: true,
+                                    text: title,
+                                    font: { size: 18 },
+                                    padding: { top: 10, bottom: 20 }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) label += ': ';
+                                            if (context.parsed.y !== null) {
+                                                label += `${context.parsed.y} ${unit}`;
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                };
+
+                createBarChart('timeChart', '개발 기간', [''], [10], [2], '년');
+                createBarChart('costChart', '개발 비용', [''], [3000], [300], '억원');
+                createBarChart('successChart', '성공률', [''], [10], [90], '%');
+                
+                // Smooth Scroll for Navigation
+                const navLinks = document.querySelectorAll('header nav a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        const targetSection = document.querySelector(targetId);
+                        if (targetSection) {
+                            window.scrollTo({
+                                top: targetSection.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+
+            } catch (error) {
+                console.error("페이지를 실행하는 중 오류가 발생했습니다:", error);
+                document.body.innerHTML = `<div style="padding:2rem; text-align:center; font-family: sans-serif;">
+                    <h2>페이지 로딩 중 오류가 발생했습니다.</h2>
+                    <p>잠시 후 다시 시도해 주세요.</p>
+                </div>`;
+            }
+        });
+    </script>
+</body>
+</html>
+
